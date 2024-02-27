@@ -85,6 +85,10 @@ if (ref) {
 const shortenSha = (sha) => sha.substring(0, 7);
 const conformAsBuildMetadata = (name) => name.replace(/[^a-zA-Z0-9]/g, '-');
 
+// In some contexts it does not matter whether this workflow was triggered by a commit pushed to a
+// branch or tag, or manually triggered at for a particular branch HEAD or tag.
+const eventIsPushOrWorkflowDispatch = context.eventName === 'push' || context.eventName === 'workflow_dispatch';
+
 let { sha } = context;
 let url = `https://github.com/${context.repo.owner}/${context.repo.repo}/`;
 let title;
@@ -95,19 +99,19 @@ if (context.eventName === 'pull_request') {
   url += `pull/${number}/`;
   title = `Pull Request #${number}`;
   buildMetadata = `PR${number}-${shortenSha(sha)}`;
+} else if (eventIsPushOrWorkflowDispatch && ref !== null && ref.type === 'head' && ref.name === 'main') {
+  title = 'Default Branch';
+  buildMetadata = shortenSha(sha);
 } else if (context.eventName === 'workflow_dispatch' && process.env.GITHUB_REF_TYPE === 'branch' && ref.type === 'head') {
   const { name } = ref;
   title = `Manually Triggered: ${process.env.GITHUB_WORKFLOW}`;
   url += `actions/runs/${process.env.GITHUB_RUN_ID}/attempts/${process.env.GITHUB_RUN_ATTEMPT}`;
   buildMetadata = `${conformAsBuildMetadata(name)}-${shortenSha(sha)}`;
-} else if (context.eventName === 'push' && ref !== null && ref.type === 'head' && ref.name === 'main') {
-  title = 'Default Branch';
-  buildMetadata = shortenSha(sha);
-} else if (context.eventName === 'push' && ref !== null && ref.type === 'tag') {
+} else if (eventIsPushOrWorkflowDispatch && ref !== null && ref.type === 'tag') {
   const { name } = ref;
   url += `releases/tag/${name}/`;
   title = `Tag: ${name}`;
-  buildMetadata = conformAsBuildMetadata(name);
+  buildMetadata = conformAsBuildMetadata(name); // because this is a tag, we don't append a SHA (assumed to remain static)
 } else {
   core.setFailed("Error: this action can only be ran on a pull_request, a push to the 'main' branch, or a push of a tag");
   process.exit(1);
