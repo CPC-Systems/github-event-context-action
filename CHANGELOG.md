@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+Support manual workflow trigger on a tag.
+
 ## 1.2.0
 
 Forked for CPC Systems from Ably original, upgrading to Node.js 20.
