@@ -13,7 +13,11 @@ outputs:
   url:
     description: A GitHub URL pointing to location that makes sense given the contents of the title output.
   artifact-path:
-    description: A path that includes the repository name as well as context of the event.
+    description: |
+      A path that includes the repository name as well as event context in an appropriate form to specify where to store generated artifacts at.
+      Never has a leading '/' character (no prefix).
+      Always has a trailing '/' character (suffix).
+      Example: "Railway-UK-DataModels/main/".
   title:
     description: A label for the event context.
   build-metadata:
