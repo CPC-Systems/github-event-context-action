@@ -91,31 +91,38 @@ const eventIsPushOrWorkflowDispatch = context.eventName === 'push' || context.ev
 
 let { sha } = context;
 let url = `https://github.com/${context.repo.owner}/${context.repo.repo}/`;
+let artifactPath = `${context.repo.repo}/`;
 let title;
 let buildMetadata;
 if (context.eventName === 'pull_request') {
   const { number } = githubEvent.pull_request;
   sha = githubEvent.pull_request.head.sha;
   url += `pull/${number}/`;
+  artifactPath += `pull/${number}`;
   title = `Pull Request #${number}`;
   buildMetadata = `PR${number}-${shortenSha(sha)}`;
 } else if (eventIsPushOrWorkflowDispatch && ref !== null && ref.type === 'head' && ref.name === 'main') {
   title = 'Default Branch';
+  artifactPath += 'main';
   buildMetadata = shortenSha(sha);
 } else if (context.eventName === 'workflow_dispatch' && process.env.GITHUB_REF_TYPE === 'branch' && ref.type === 'head') {
   const { name } = ref;
   title = `Manually Triggered: ${process.env.GITHUB_WORKFLOW}`;
   url += `actions/runs/${process.env.GITHUB_RUN_ID}/attempts/${process.env.GITHUB_RUN_ATTEMPT}`;
+  artifactPath += ref.name;
   buildMetadata = `${conformAsBuildMetadata(name)}-${shortenSha(sha)}`;
 } else if (eventIsPushOrWorkflowDispatch && ref !== null && ref.type === 'tag') {
   const { name } = ref;
   url += `releases/tag/${name}/`;
+  artifactPath += `tag/${name}`;
   title = `Tag: ${name}`;
   buildMetadata = conformAsBuildMetadata(name); // because this is a tag, we don't append a SHA (assumed to remain static)
 } else {
   core.setFailed("Error: this action can only be ran on a pull_request, a push to the 'main' branch, or a push of a tag");
   process.exit(1);
 }
+
+artifactPath += '/';
 
 const emit = (key, value) => {
   core.info(`${key}: ${value}`);
@@ -124,5 +131,6 @@ const emit = (key, value) => {
 
 emit('sha', sha);
 emit('url', url);
+emit('artifact-path', artifactPath);
 emit('title', title);
 emit('build-metadata', buildMetadata);

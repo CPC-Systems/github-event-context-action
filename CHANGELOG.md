@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+Adds an `artifact-path` output.
+
 ## 1.2.1
 
 Support manual workflow trigger on a tag.
