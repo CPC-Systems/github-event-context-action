@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+Dependency upgrades:
+
+- to Node.js version `24` (was `20`)
+- npm packages to resolve high and moderate vulnerabilities
+
 ## 1.3.0
 
 Adds an `artifact-path` output.
