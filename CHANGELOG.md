@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+Upgraded to Node.js version `24` (was `20`).
+
 ## 1.3.0
 
 Adds an `artifact-path` output.
