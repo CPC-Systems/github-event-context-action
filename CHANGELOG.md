@@ -1,11 +1,13 @@
 # Changelog
 
-## Unreleased
+## 1.4.0
 
 Dependency upgrades:
 
 - to Node.js version `24` (was `20`)
 - npm packages to resolve high and moderate vulnerabilities
+
+Adds more information to the log in respect of the GitHub event.
 
 ## 1.3.0
 
