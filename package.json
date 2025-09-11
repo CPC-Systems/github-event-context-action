@@ -1,6 +1,6 @@
 {
   "name": "@cpc-systems/github-event-context-action",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "GitHub Action to collect conformed information on the workflow event context. Forked from Ably's creation.",
   "scripts": {
     "lint": "eslint .",

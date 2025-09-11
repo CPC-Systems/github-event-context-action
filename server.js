@@ -15,7 +15,10 @@ if (typeof githubRef !== 'string') {
   process.exit(1);
 }
 
-const githubEvent = JSON.parse(fs.readFileSync(githubEventPath, 'utf8'));
+const githubEventJson = fs.readFileSync(githubEventPath, 'utf8');
+core.info(`GitHub Event JSON:\n---\n${githubEventJson}\n---`);
+
+const githubEvent = JSON.parse(githubEventJson);
 
 const logInput = (key, value) => core.info(`${key}: ${typeof value === 'string' ? `"${value}"` : value}`);
 
